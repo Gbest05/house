@@ -28,6 +28,8 @@ def handle_upload():
             continue
         try:
             url = upload_file(file_obj, folder="properties")
+            if url and url.startswith('/api/uploads/'):
+                url = f"{request.host_url.rstrip('/')}{url}"
             uploaded_urls.append(url)
         except Exception as e:
             errors.append(f"{file_obj.filename}: {str(e)}")
