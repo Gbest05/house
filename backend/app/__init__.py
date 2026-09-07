@@ -40,6 +40,12 @@ def create_app(config_class=Config):
     app.register_blueprint(notifications_bp)
     app.register_blueprint(uploads_bp)
 
+    from flask import send_from_directory
+
+    frontend_dist = os.path.abspath(
+        os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'frontend', 'dist')
+    )
+
     @app.route('/api/health', methods=['GET'])
     def health_check():
         return jsonify({
@@ -47,6 +53,32 @@ def create_app(config_class=Config):
             'service': 'Accommodation Sourcing Management System API',
             'location': 'Saapade, Ogun State, Nigeria',
             'version': '1.0.0'
+        }), 200
+
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve_app_or_info(path):
+        # Pass API routes to standard 404 if not matched by blueprints
+        if path.startswith('api'):
+            return jsonify({'error': 'Resource not found'}), 404
+
+        # If frontend build exists, serve the React frontend SPA
+        if os.path.isdir(frontend_dist):
+            target_file = os.path.join(frontend_dist, path)
+            if path and os.path.isfile(target_file):
+                return send_from_directory(frontend_dist, path)
+            index_file = os.path.join(frontend_dist, 'index.html')
+            if os.path.isfile(index_file):
+                return send_from_directory(frontend_dist, 'index.html')
+
+        # Fallback informative welcome response for API
+        return jsonify({
+            'service': 'Accommodation Sourcing Management System API',
+            'status': 'online',
+            'location': 'Saapade, Ogun State, Nigeria',
+            'health': '/api/health',
+            'properties_api': '/api/properties',
+            'message': 'API is running successfully. If you deployed frontend separately, visit your Render Static Site URL.'
         }), 200
 
     # Global JSON error handlers
