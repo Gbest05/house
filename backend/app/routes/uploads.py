@@ -6,7 +6,7 @@ from app.utils.auth_decorators import jwt_required
 uploads_bp = Blueprint('uploads', __name__, url_prefix='/api/uploads')
 
 @uploads_bp.route('', methods=['POST'])
-@jwt_required()
+@jwt_required(optional=True)
 def handle_upload():
     """
     Handle single or multiple image uploads.

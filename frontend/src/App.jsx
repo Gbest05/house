@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -12,6 +12,7 @@ import PropertyDetailPage from './pages/PropertyDetailPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AgentRegisterPage from './pages/AgentRegisterPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 
@@ -53,6 +54,8 @@ export default function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/agent-register" element={<AgentRegisterPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="/forgot-password" element={<ResetPasswordPage />} />
 
               {/* User / Student Routes */}
               <Route
@@ -130,6 +133,15 @@ export default function App() {
                 }
               />
 
+              <Route
+                path="/agent/profile"
+                element={
+                  <ProtectedRoute allowedRoles={['agent', 'admin']}>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
+
               {/* Admin Routes */}
               <Route
                 path="/admin/dashboard"
@@ -179,14 +191,41 @@ export default function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/admin/profile"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
-          <Footer />
+          <ConditionalFooter />
         </div>
       </AuthProvider>
     </BrowserRouter>
   );
+}
+
+function ConditionalFooter() {
+  const location = useLocation();
+  const hidePrefixes = [
+    '/login',
+    '/register',
+    '/agent-register',
+    '/reset-password',
+    '/forgot-password',
+    '/user',
+    '/agent',
+    '/admin',
+  ];
+  const shouldHide = hidePrefixes.some(
+    (prefix) => location.pathname === prefix || location.pathname.startsWith(prefix + '/')
+  );
+  if (shouldHide) return null;
+  return <Footer />;
 }

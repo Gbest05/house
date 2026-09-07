@@ -157,16 +157,20 @@ def get_current_user():
 def update_profile():
     """Update current user profile information."""
     data = request.get_json() or {}
-    name = data.get('name', '').strip()
-    phone = data.get('phone', '').strip()
-    avatar = data.get('avatar', '').strip()
+    name = data.get('name', '').strip() if 'name' in data else g.current_user.get('name', '')
+    phone = data.get('phone', '').strip() if 'phone' in data else g.current_user.get('phone', '')
+    avatar = data.get('avatar')
+    if avatar is not None:
+        avatar = avatar.strip()
+    else:
+        avatar = g.current_user.get('avatar')
 
     if not name or len(name) < 2:
         return jsonify({'error': 'Name must be at least 2 characters long'}), 400
 
     execute_db(
         "UPDATE users SET name = ?, phone = ?, avatar = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-        (name, phone, avatar or g.current_user.get('avatar'), g.current_user['id'])
+        (name, phone, avatar, g.current_user['id'])
     )
 
     # If agent, update agency details if provided
@@ -209,3 +213,34 @@ def change_password():
     execute_db("UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (new_hash, g.current_user['id']))
 
     return jsonify({'message': 'Password changed successfully'}), 200
+
+@auth_bp.route('/reset-password', methods=['POST'])
+def reset_password():
+    """Reset user password using registered email."""
+    data = request.get_json() or {}
+    email = data.get('email', '').strip().lower()
+    new_password = data.get('new_password', '').strip()
+
+    if not email:
+        return jsonify({'error': 'Registered email address is required'}), 400
+    if not new_password or len(new_password) < 6:
+        return jsonify({'error': 'New password must be at least 6 characters long'}), 400
+
+    user = query_db("SELECT id, name, is_active FROM users WHERE email = ?", (email,), one=True)
+    if not user:
+        return jsonify({'error': 'No account found with this email address'}), 404
+    if not user['is_active']:
+        return jsonify({'error': 'This account has been deactivated. Please contact support.'}), 403
+
+    new_hash = hash_password(new_password)
+    execute_db("UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (new_hash, user['id']))
+
+    # Log notification
+    execute_db(
+        """INSERT INTO notifications (user_id, title, message, type, link)
+           VALUES (?, 'Password Reset', 'Your account password has been reset successfully.', 'info', '/user/profile')""",
+        (user['id'],)
+    )
+
+    return jsonify({'message': 'Your password has been reset successfully. You can now log in.'}), 200
+
