@@ -127,8 +127,8 @@ pip install -r requirements.txt
 python run.py
 ```
 
-The Flask API will start at: `http://127.0.0.1:5000`  
-Health check endpoint: `http://127.0.0.1:5000/api/health`
+The Flask API will start at: `http://127.0.0.1:5050`  
+Health check endpoint: `http://127.0.0.1:5050/api/health`
 
 To run the automated backend test suite:
 ```bash
