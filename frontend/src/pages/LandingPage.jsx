@@ -63,31 +63,33 @@ export default function LandingPage() {
     <div className="space-y-16 sm:space-y-24 pb-16">
       
       {/* 1. HERO SECTION */}
-      <section className="relative pt-12 sm:pt-20 pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden bg-radial from-slate-900 via-slate-950 to-slate-950 text-white">
-        {/* Background glow effects */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative pt-14 sm:pt-20 pb-24 sm:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden bg-slate-950 text-white">
+        {/* Rich Background Gradients & Ambient Lighting */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 pointer-events-none" />
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-emerald-500/20 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10 space-y-8">
           
           {/* Tagline Badge */}
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 backdrop-blur-md shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
               <span>Saapade & Remo Housing Portal • Case Study: Ogun State</span>
             </div>
           </div>
 
           {/* Main Headline */}
           <div className="text-center max-w-3xl mx-auto space-y-4">
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15] text-white">
               Find a Place You'll <br className="hidden sm:inline" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200">
                 Love to Call Home
               </span>
             </h1>
             <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
               Discover verified student hostels, self-contained rooms, and shared apartments around 
-              <strong> Gateway ICT Polytechnic, Saapade</strong> and neighboring towns in Ogun State.
+              <strong className="text-white font-bold"> Gateway ICT Polytechnic, Saapade</strong> and neighboring towns in Ogun State.
             </p>
           </div>
 
@@ -102,15 +104,35 @@ export default function LandingPage() {
             </Link>
             <Link
               to="/agent-register"
-              className="px-6 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-sm transition"
+              className="px-6 py-3 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-slate-600 font-semibold text-sm transition backdrop-blur-sm"
             >
               <span>List Your Property</span>
             </Link>
           </div>
 
           {/* Hero Search Box */}
-          <div className="pt-6">
+          <div className="pt-4 sm:pt-6">
             <SearchHero />
+          </div>
+
+          {/* Trust Highlights Bar */}
+          <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto text-center">
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xs">
+              <span className="text-base sm:text-lg font-black text-emerald-400 block">✓ 100% Verified</span>
+              <span className="text-[11px] text-slate-400">Inspected by Admin</span>
+            </div>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xs">
+              <span className="text-base sm:text-lg font-black text-white block">3 Mins Walk</span>
+              <span className="text-[11px] text-slate-400">To GAPOSA Campus</span>
+            </div>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xs">
+              <span className="text-base sm:text-lg font-black text-white block">₦0 Scam Fee</span>
+              <span className="text-[11px] text-slate-400">Zero Middleman Fraud</span>
+            </div>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xs">
+              <span className="text-base sm:text-lg font-black text-emerald-400 block">OpenStreetMap</span>
+              <span className="text-[11px] text-slate-400">Accurate Spatial Pins</span>
+            </div>
           </div>
 
         </div>
