@@ -25,6 +25,7 @@ import api from '../../api/client';
 export default function UserProfile() {
   const { user, updateUser } = useAuth();
   const fileInputRef = useRef(null);
+  const idDocInputRef = useRef(null);
 
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
@@ -47,10 +48,47 @@ export default function UserProfile() {
 
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarSuccessMsg, setAvatarSuccessMsg] = useState(null);
+  const [uploadingIdDoc, setUploadingIdDoc] = useState(false);
+  const [idDocSuccessMsg, setIdDocSuccessMsg] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileMsg, setProfileMsg] = useState(null);
   const [pwdLoading, setPwdLoading] = useState(false);
   const [pwdMsg, setPwdMsg] = useState(null);
+
+  // Handle agent ID document upload
+  const handleIdDocChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Document size must be less than 5MB.');
+      return;
+    }
+
+    setUploadingIdDoc(true);
+    setIdDocSuccessMsg(null);
+
+    const formData = new FormData();
+    formData.append('images', file);
+
+    try {
+      const res = await api.post('/uploads', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const newDocUrl = res.data.url || (res.data.urls && res.data.urls[0]);
+      if (newDocUrl) {
+        const updateRes = await authApi.updateProfile({ id_card_url: newDocUrl });
+        updateUser(updateRes.user);
+        setIdDocSuccessMsg('ID Document uploaded successfully!');
+        setTimeout(() => setIdDocSuccessMsg(null), 4000);
+      }
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to upload document.');
+    } finally {
+      setUploadingIdDoc(false);
+      if (idDocInputRef.current) idDocInputRef.current.value = '';
+    }
+  };
 
   // Handle direct file upload for profile picture
   const handleFileChange = async (e) => {
@@ -378,6 +416,60 @@ export default function UserProfile() {
                     onChange={(e) => setProfileData({ ...profileData, office_address: e.target.value })}
                     className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Accreditation ID Document (NIN / Driver's License / Agency ID)
+                  </label>
+                  <div className="p-3.5 border border-slate-200 rounded-2xl bg-slate-50 space-y-2">
+                    {user?.agent_info?.id_card_url ? (
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-emerald-700 font-semibold flex items-center gap-1.5">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                          Document on file
+                        </span>
+                        <a
+                          href={user.agent_info.id_card_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-xs text-emerald-600 font-bold hover:underline inline-flex items-center gap-1"
+                        >
+                          <span>View Document</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-slate-500">
+                        No ID document uploaded yet. Upload an ID to be verified by administrators.
+                      </p>
+                    )}
+
+                    <input
+                      type="file"
+                      ref={idDocInputRef}
+                      onChange={handleIdDocChange}
+                      accept="image/*,application/pdf"
+                      className="hidden"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => idDocInputRef.current?.click()}
+                      disabled={uploadingIdDoc}
+                      className="w-full py-2 px-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-xs font-bold text-slate-700 flex items-center justify-center gap-2 shadow-xs transition cursor-pointer"
+                    >
+                      <Upload className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>{uploadingIdDoc ? 'Uploading ID Document...' : user?.agent_info?.id_card_url ? 'Upload New / Replace Document' : 'Upload ID Document'}</span>
+                    </button>
+
+                    {idDocSuccessMsg && (
+                      <div className="p-2 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800 flex items-center gap-1.5 animate-in fade-in">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        <span>{idDocSuccessMsg}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </>
             )}

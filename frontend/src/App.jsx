@@ -41,7 +41,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <div className="flex flex-col min-h-screen">
-          <Navbar />
+          <ConditionalNavbar />
           <main className="flex-1">
             <Routes>
               {/* Public Routes */}
@@ -209,6 +209,22 @@ export default function App() {
       </AuthProvider>
     </BrowserRouter>
   );
+}
+
+function ConditionalNavbar() {
+  const location = useLocation();
+  const hidePrefixes = [
+    '/login',
+    '/register',
+    '/agent-register',
+    '/reset-password',
+    '/forgot-password',
+  ];
+  const shouldHide = hidePrefixes.some(
+    (prefix) => location.pathname === prefix || location.pathname.startsWith(prefix + '/')
+  );
+  if (shouldHide) return null;
+  return <Navbar />;
 }
 
 function ConditionalFooter() {

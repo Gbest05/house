@@ -177,10 +177,11 @@ def update_profile():
     if g.current_user['role'] == 'agent':
         agency_name = data.get('agency_name')
         office_address = data.get('office_address')
-        if agency_name or office_address:
+        id_card_url = data.get('id_card_url')
+        if agency_name or office_address or id_card_url:
             execute_db(
-                "UPDATE agents SET agency_name = COALESCE(?, agency_name), office_address = COALESCE(?, office_address) WHERE user_id = ?",
-                (agency_name, office_address, g.current_user['id'])
+                "UPDATE agents SET agency_name = COALESCE(?, agency_name), office_address = COALESCE(?, office_address), id_card_url = COALESCE(?, id_card_url) WHERE user_id = ?",
+                (agency_name, office_address, id_card_url, g.current_user['id'])
             )
 
     updated_user = query_db("SELECT id, name, email, role, phone, avatar, created_at FROM users WHERE id = ?", (g.current_user['id'],), one=True)

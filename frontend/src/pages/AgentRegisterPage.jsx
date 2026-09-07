@@ -13,7 +13,6 @@ export default function AgentRegisterPage() {
     phone: '',
     agency_name: '',
     office_address: '',
-    id_card_url: '',
     password: '',
     confirmPassword: '',
   });
@@ -37,7 +36,6 @@ export default function AgentRegisterPage() {
         phone: formData.phone,
         agency_name: formData.agency_name,
         office_address: formData.office_address,
-        id_card_url: formData.id_card_url,
         password: formData.password,
       });
       navigate('/agent/dashboard');
@@ -76,7 +74,7 @@ export default function AgentRegisterPage() {
           <div className="space-y-1">
             <p className="font-bold">Verification Policy Notice</p>
             <p className="text-amber-800 leading-relaxed">
-              Upon submitting this form, your agent profile will have <strong>Pending Verification</strong> status. The system administrator will verify your agency address before listing approvals.
+              Upon registration, your account will be created. You can upload your government ID or agency accreditation document directly in your <strong>Agent Dashboard</strong> for verification.
             </p>
           </div>
         </div>
@@ -144,35 +142,20 @@ export default function AgentRegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Agency / Business Name *
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    required
-                    value={formData.agency_name}
-                    onChange={(e) => setFormData({ ...formData, agency_name: e.target.value })}
-                    placeholder="e.g. Gateway Prime Properties"
-                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
-                  />
-                  <Building2 className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  ID Document URL (Optional)
-                </label>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Agency / Business Name *
+              </label>
+              <div className="relative">
                 <input
-                  type="url"
-                  value={formData.id_card_url}
-                  onChange={(e) => setFormData({ ...formData, id_card_url: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
+                  type="text"
+                  required
+                  value={formData.agency_name}
+                  onChange={(e) => setFormData({ ...formData, agency_name: e.target.value })}
+                  placeholder="e.g. Gateway Prime Properties"
+                  className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
                 />
+                <Building2 className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               </div>
             </div>
 

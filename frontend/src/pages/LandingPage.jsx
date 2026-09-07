@@ -36,7 +36,7 @@ export default function LandingPage() {
     {
       name: 'Saapade',
       desc: 'Gateway ICT Polytechnic campus gates & Orile',
-      image: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=600&q=80',
+      image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=600&q=80',
       count: 'Gateway Poly Area',
     },
     {
@@ -168,6 +168,9 @@ export default function LandingPage() {
               <img
                 src={loc.image}
                 alt={loc.name}
+                onError={(e) => {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=600&q=80';
+                }}
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent p-4 flex flex-col justify-end text-white">
